@@ -1,15 +1,13 @@
 const express = require('express')
 const router = express()
 // Import Controller
-const { create } = require('./controller')
+const { create, index, find, update, destroy } = require('./controller')
 
 // Router API Categories
 router.post('/categories', create)
-
-router.get('/categories', (req, res) => {
-    res.status(200).json({
-        message: "Endpoint Categories"
-    })
-})
+router.get('/categories', index)
+router.get('/categories/:id', find)
+router.put('/categories/:id', update)
+router.delete('/categories/:id', destroy)
 
 module.exports = router
