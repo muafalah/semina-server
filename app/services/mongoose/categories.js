@@ -15,6 +15,8 @@ const createCategories = async (req) => {
 
 const getAllCategories = async (req) => {
     const result = await Categories.find()
+        // Data apa saja yang ingin ditampilkan
+        .select('_id name')
 
     return result
 }
@@ -23,6 +25,8 @@ const getOneCategories = async (req) => {
     const { id } = req.params
 
     const result = await Categories.findOne({ _id: id })
+        // Data apa saja yang ingin ditampilkan
+        .select('_id name')
 
     // Pengecekan apakah id kategori benar atau tidak
     if (!result) throw new NotFoundError(`Tidak ada kategori dengan id : ${id}`)
@@ -47,6 +51,8 @@ const updateCategories = async (req) => {
         { name: name },
         { new: true, runValidators: true }
     )
+        // Data apa saja yang ingin ditampilkan
+        .select('_id name')
 
     return result
 }
@@ -55,6 +61,8 @@ const deleteCategories = async (req) => {
     const { id } = req.params
 
     const result = await Categories.findOneAndDelete({ _id: id })
+        // Data apa saja yang ingin ditampilkan
+        .select('_id name')
 
     // Pengecekan apakah id kategori benar atau tidak
     if (!result) throw new NotFoundError(`Tidak ada kategori dengan id : ${id}`)

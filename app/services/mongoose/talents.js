@@ -73,7 +73,7 @@ const updateTalents = async (req) => {
 
     // Pengecekan apakah id talent benar atau tidak
     const check = await Talents.findOne({ _id: id })
-    console.log("check", check)
+
     if (!check) throw new NotFoundError(`Tidak ada pembicara dengan id : ${id}`)
 
     // Mengecek apakah nama talent sudah pernah dipakai sebelumnya
