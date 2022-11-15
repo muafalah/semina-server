@@ -1,0 +1,38 @@
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    // Tempat menyimpan filenya
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/')
+    },
+    // Digunakan untuk penamaan filenya
+    filename: function (req, file, cb) {
+        cb(null, Math.floor(Math.random() * 99999999) + '-' + file.originalname)
+    }
+})
+
+const fileFilter = (req, file, cb) => {
+    // Tipe file yang diizinkan untuk diupload
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+        cb(null, true)
+    } else {
+        cb(
+            {
+                // pesan jika format file tidak didukung
+                message: 'Unsupported file format',
+            },
+            false
+        )
+    }
+}
+
+const uploadMiddleware = multer({
+    storage,
+    // Batasan ukuran file yang diupload
+    limits: {
+        fileSize: 3000000,
+    },
+    fileFilter: fileFilter,
+})
+
+module.exports = uploadMiddleware
