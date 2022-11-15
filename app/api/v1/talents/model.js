@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const { model, Schema } = mongoose
 
-let talentSchema = Schema(
+const talentSchema = Schema(
     {
         // Nama Talent
         name: {
