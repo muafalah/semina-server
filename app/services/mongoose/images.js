@@ -1,4 +1,5 @@
 const Images = require('../../api/v1/images/model')
+const { NotFoundError } = require('../../errors')
 
 // Ada 2 Cara
 // 1. Kita simpan dulu gambarnya di database, baru kita ambil urlnya
@@ -15,6 +16,17 @@ const createImages = async (req) => {
 //    return result
 // }
 
+// Diperuntukkan untuk melakukan pengecekan image ketika sedang digunakan pada datatable lainnya
+const checkingImages = async (id) => {
+    const result = await Images.findOne({ _id: id })
+
+    // Pengecekan apakah id image benar atau tidak
+    if (!result) throw new NotFoundError(`Tidak ada Gambar dengan id : ${id}`)
+
+    return result
+}
+
 module.exports = {
-    createImages
+    createImages,
+    checkingImages,
 }
