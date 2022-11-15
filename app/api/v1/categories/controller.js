@@ -1,19 +1,11 @@
 const Categories = require('./model')
+const { getAllCategories, createCategories, getOneCategories, updateCategories, deleteCategories } = require('../../../services/mongoose/categories')
 
 // Membuat data baru
 const create = async (req, res, next) => {
     try {
-        // Mengambil data dari API body
-        const { name } = req.body
+        const result = await createCategories(req)
 
-        // Menambahkan data ke database
-        const result = await Categories.create(
-            { name: name }
-        )
-
-        if (!result) return res.status(404).json({ message: 'Nama kategori belum dimasukkan' })
-
-        // Mengirimkan respon ke API
         res.status(201).json({
             data: result
         })
@@ -25,9 +17,7 @@ const create = async (req, res, next) => {
 // Menampilkan semua data
 const index = async (req, res, next) => {
     try {
-        const result = await Categories.find()
-
-        if (result < 1) return res.status(404).json({ message: 'Tidak ada kategori yang ditambahkan' })
+        const result = await getAllCategories(req)
 
         res.status(200).json({
             data: result
@@ -40,13 +30,7 @@ const index = async (req, res, next) => {
 // Menampilkan data tunggal
 const find = async (req, res, next) => {
     try {
-        const { id } = req.params
-
-        const result = await Categories.findOne(
-            { _id: id }
-        )
-
-        if (!result) return res.status(404).json({ message: 'Id kategori tidak ditemukan' })
+        const result = await getOneCategories(req)
 
         res.status(200).json({
             data: result
@@ -58,17 +42,7 @@ const find = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-
-        const { id } = req.params
-        const { name } = req.body
-
-        const result = await Categories.findOneAndUpdate(
-            { _id: id },
-            { name: name },
-            { new: true, runValidators: true }
-        )
-
-        if (!result) return res.status(404).json({ message: 'Id kategori tidak ditemukan' })
+        const result = await updateCategories(req)
 
         res.status(200).json({
             data: result
@@ -80,13 +54,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
     try {
-        const { id } = req.params
-
-        const result = await Categories.findOneAndRemove(
-            { _id: id }
-        )
-
-        if (!result) return res.status(404).json({ message: 'Id kategori tidak ditemukan' })
+        const result = await deleteCategories(req)
 
         res.status(200).json({
             data: result

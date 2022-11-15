@@ -1,15 +1,17 @@
 const { StatusCodes } = require('http-status-codes')
 
-const errorHandlerMiddleware = (req, res, next, err) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
     // Status Error Default jika errornya tidak diketahui, seperti service mati atau aplikasinya crash
     let customError = {
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-        msg: err.message || "Something went wrong try again later",
+        msg: err.message || 'Something went wrong try again later',
     }
 
     // Untuk menghandle ValidationError bawaan dari mongoose, seperti minLength, maxLength, required, dll
     if (err.name === 'ValidationError') {
-        customError.msg = Object.values(err.errors).map((item) => item.message).join(', ')
+        customError.msg = Object.values(err.errors)
+            .map((item) => item.message)
+            .join(', ')
         // Ini error kodenya bisa menggunakan 400 atau 422
         customError.statusCode = 400
     }
@@ -28,3 +30,5 @@ const errorHandlerMiddleware = (req, res, next, err) => {
 
     return res.status(customError.statusCode).json({ msg: customError.msg })
 }
+
+module.exports = errorHandlerMiddleware
