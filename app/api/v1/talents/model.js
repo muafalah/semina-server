@@ -1,4 +1,5 @@
-const { model, Schema, default: mongoose } = require('mongoose')
+const mongoose = require('mongoose')
+const { model, Schema } = mongoose
 
 let talentSchema = Schema(
     {
