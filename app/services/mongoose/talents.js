@@ -115,10 +115,20 @@ const deleteTalents = async (req) => {
     return result
 }
 
+const checkingTalents = async (id) => {
+    const result = await Talents.findOne({ _id: id })
+
+    // Pengecekan apakah id image benar atau tidak
+    if (!result) throw new NotFoundError(`Tidak ada Talent dengan id : ${id}`)
+
+    return result
+}
+
 module.exports = {
     createTalents,
     getAllTalents,
     getOneTalents,
     updateTalents,
     deleteTalents,
+    checkingTalents,
 }
