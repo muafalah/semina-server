@@ -10,7 +10,7 @@ const createJWT = ({ payload }) => {
 }
 
 // Digunakan untuk mengecek apakah token benar atau salah
-const isTokenValid = ({ token }) => jwt.verify(token.jwtSecret)
+const isTokenValid = ({ token }) => jwt.verify(token, jwtSecret)
 
 module.exports = {
     createJWT,

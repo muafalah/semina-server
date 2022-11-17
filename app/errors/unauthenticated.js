@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes')
-const CustomAPIError = require("./custom-api-error");
+const CustomAPIError = require('./custom-api-error');
 
 // Digunakan jika masa token sudah habis
 class UnauthenticatedError extends CustomAPIError {
