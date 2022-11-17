@@ -8,13 +8,13 @@ const createCategories = async (req) => {
     const checkDuplicate = await Categories.findOne({ name: name })
     if (checkDuplicate) throw new BadRequestError('Nama kategori sudah pernah digunakan')
 
-    const result = await Categories.create({ name: name })
+    const result = await Categories.create({ name: name, organizer: req.user.organizer })
 
     return result
 }
 
 const getAllCategories = async (req) => {
-    const result = await Categories.find()
+    const result = await Categories.find({ organizer: req.user.organizer })
         // Data apa saja yang ingin ditampilkan
         .select('_id name')
 
@@ -24,7 +24,7 @@ const getAllCategories = async (req) => {
 const getOneCategories = async (req) => {
     const { id } = req.params
 
-    const result = await Categories.findOne({ _id: id })
+    const result = await Categories.findOne({ _id: id, organizer: req.user.organizer })
         // Data apa saja yang ingin ditampilkan
         .select('_id name')
 
@@ -39,16 +39,16 @@ const updateCategories = async (req) => {
     const { name } = req.body
 
     // Pengecekan apakah id kategori benar atau tidak
-    const check = await Categories.findOne({ _id: id })
+    const check = await Categories.findOne({ _id: id, organizer: req.user.organizer })
     if (!check) throw new NotFoundError(`Tidak ada kategori dengan id : ${id}`)
 
     // Pengecekan apakah ada kategori dengan nama yang sama
-    const checkDuplicate = await Categories.findOne({ _id: { $ne: id }, name: name })
+    const checkDuplicate = await Categories.findOne({ _id: { $ne: id }, name: name, organizer: req.user.organizer })
     if (checkDuplicate) throw new BadRequestError('Nama kategori sudah pernah digunakan')
 
     const result = await Categories.findOneAndUpdate(
         { _id: id },
-        { name: name },
+        { name: name, organizer: req.user.organizer },
         { new: true, runValidators: true }
     )
         // Data apa saja yang ingin ditampilkan
@@ -60,7 +60,7 @@ const updateCategories = async (req) => {
 const deleteCategories = async (req) => {
     const { id } = req.params
 
-    const result = await Categories.findOneAndDelete({ _id: id })
+    const result = await Categories.findOneAndDelete({ _id: id, organizer: req.user.organizer })
         // Data apa saja yang ingin ditampilkan
         .select('_id name')
 
@@ -71,7 +71,7 @@ const deleteCategories = async (req) => {
 }
 
 const checkingCategories = async (id) => {
-    const result = await Categories.findOne({ _id: id });
+    const result = await Categories.findOne({ _id: id, organizer: req.user.organizer });
 
     if (!result) throw new NotFoundError(`Tidak ada Kategori dengan id :  ${id}`);
 
