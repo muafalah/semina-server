@@ -81,6 +81,11 @@ const eventSchema = Schema(
             ref: 'Talent',
             required: [true, 'Pembicara acara harus diisi'],
         },
+        organizer: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Organizer',
+            required: [true, 'Penyelenggara acara harus diisi'],
+        },
     },
     { timestamps: true }
 )

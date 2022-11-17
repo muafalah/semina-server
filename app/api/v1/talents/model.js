@@ -13,6 +13,11 @@ const talentSchema = Schema(
             type: String,
             default: '-',
         },
+        organizer: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Organizer',
+            required: [true, 'Penyelenggara acara harus diisi'],
+        },
         // Relasi dari Image 
         image: {
             type: mongoose.Types.ObjectId,

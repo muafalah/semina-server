@@ -1,7 +1,6 @@
 const Users = require('../../api/v1/users/model')
 const Organizers = require('../../api/v1/organizers/model')
 const { BadRequestError } = require('../../errors')
-const { StatusCodes } = require('http-status-codes')
 
 const createOrganizers = async (req) => {
     const { organizer, name, email, password, confirmPassword, role } = req.body
@@ -48,7 +47,14 @@ const createUsers = async (req) => {
     return result
 }
 
+const getAllUsers = async (req) => {
+    const result = await Users.find()
+
+    return result
+}
+
 module.exports = {
     createOrganizers,
     createUsers,
+    getAllUsers,
 }

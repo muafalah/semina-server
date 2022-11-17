@@ -9,11 +9,11 @@ const createTalents = async (req) => {
     await checkingImages(image)
 
     // Mengecek apakah nama talent sudah pernah dipakai sebelumnya
-    const checkDuplicate = await Talents.findOne({ name: name })
+    const checkDuplicate = await Talents.findOne({ name: name, organizer: req.user.organizer })
     if (checkDuplicate) throw new BadRequestError('Nama pembicara sudah pernah digunakan')
 
     // Memasukkan data talent
-    const result = await Talents.create({ name: name, role: role, image: image })
+    const result = await Talents.create({ name: name, role: role, image: image, organizer: req.user.organizer })
 
     return result
 }
@@ -22,7 +22,7 @@ const getAllTalents = async (req) => {
     // Keyword jika ingin melakukan pencarian tertentu
     const { keyword } = req.query
 
-    let condition = {}
+    let condition = { organizer: req.user.organizer }
 
     // Jika ingin melakukan pencarian tertentu maka akan ditampilkan
     // Namun jika tidak ingin melakukan pencarian tertentu maka akan ditampilkan semua
@@ -49,7 +49,7 @@ const getAllTalents = async (req) => {
 const getOneTalents = async (req) => {
     const { id } = req.params
 
-    const result = await Talents.findOne({ _id: id })
+    const result = await Talents.findOne({ _id: id, organizer: req.user.organizer })
         // Data apa saja yang ingin ditampilkan
         .select('_id name role image')
         // Menampilkan data lain dari relasi data
@@ -72,18 +72,17 @@ const updateTalents = async (req) => {
     await checkingImages(image)
 
     // Pengecekan apakah id talent benar atau tidak
-    const check = await Talents.findOne({ _id: id })
-
+    const check = await Talents.findOne({ _id: id, organizer: req.user.organizer })
     if (!check) throw new NotFoundError(`Tidak ada pembicara dengan id : ${id}`)
 
     // Mengecek apakah nama talent sudah pernah dipakai sebelumnya
-    const checkDuplicate = await Talents.findOne({ _id: { $ne: id }, name: name })
+    const checkDuplicate = await Talents.findOne({ _id: { $ne: id }, name: name, organizer: req.user.organizer })
     if (checkDuplicate) throw new BadRequestError('Nama pembicara sudah pernah digunakan')
 
     // Memasukkan data talent
     const result = await Talents.findOneAndUpdate(
         { _id: id },
-        { name, image, role },
+        { name, image, role, organizer: req.user.organizer },
         { new: true, runValidators: true },
     )
         // Data apa saja yang ingin ditampilkan
@@ -100,7 +99,7 @@ const updateTalents = async (req) => {
 const deleteTalents = async (req) => {
     const { id } = req.params
 
-    const result = await Talents.findOneAndDelete({ _id: id })
+    const result = await Talents.findOneAndDelete({ _id: id, organizer: req.user.organizer })
         // Data apa saja yang ingin ditampilkan
         .select('_id name role image')
         // Menampilkan data lain dari relasi data

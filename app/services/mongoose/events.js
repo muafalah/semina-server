@@ -24,7 +24,7 @@ const createEvents = async (req) => {
     await checkingCategories(category)
     await checkingTalents(talent)
 
-    const checkDuplicate = await Events.findOne({ title: title })
+    const checkDuplicate = await Events.findOne({ title: title, organizer: req.user.organizer })
     if (checkDuplicate) throw new BadRequestError('Judul acara sudah pernah digunakan')
 
     const result = await Events.create({
@@ -40,6 +40,7 @@ const createEvents = async (req) => {
         image: image,
         category: category,
         talent: talent,
+        organizer: req.user.organizer,
     })
 
     return result
@@ -48,7 +49,7 @@ const createEvents = async (req) => {
 const getAllEvents = async (req) => {
     const { keyword, category, talent } = req.query
 
-    let condition = {}
+    let condition = { organizer: req.user.organizer }
 
     if (keyword) {
         condition = { ...condition, title: { $regex: keyword, $options: 'i' } }
@@ -84,7 +85,7 @@ const getAllEvents = async (req) => {
 const getOneEvents = async (req) => {
     const { id } = req.params
 
-    const result = await Events.findOne({ _id: id })
+    const result = await Events.findOne({ _id: id, organizer: req.user.organizer })
         .populate({
             path: 'image',
             select: '_id name',
@@ -129,10 +130,10 @@ const updateEvents = async (req) => {
     await checkingCategories(category)
     await checkingTalents(talent)
 
-    const check = await Events.findOne({ _id: id })
+    const check = await Events.findOne({ _id: id, organizer: req.user.organizer })
     if (!check) throw new NotFoundError(`Tidak ada acara dengan id : ${id}`)
 
-    const checkDuplicate = await Events.findOne({ _id: { $ne: id }, title: title })
+    const checkDuplicate = await Events.findOne({ _id: { $ne: id }, title: title, organizer: req.user.organizer })
     if (checkDuplicate) throw new BadRequestError('Judul acara sudah pernah digunakan')
 
     const result = await Events.findOneAndUpdate(
@@ -150,6 +151,7 @@ const updateEvents = async (req) => {
             image: image,
             category: category,
             talent: talent,
+            organizer: req.user.organizer,
         },
         { new: true, runValidators: true }
     )
@@ -176,7 +178,7 @@ const updateEvents = async (req) => {
 const deleteEvents = async (req) => {
     const { id } = req.params
 
-    const result = await Events.findOneAndDelete({ _id: id })
+    const result = await Events.findOneAndDelete({ _id: id, organizer: req.user.organizer })
         .populate({
             path: 'image',
             select: '_id name',
